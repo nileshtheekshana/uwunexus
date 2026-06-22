@@ -1,0 +1,373 @@
+PROJECT PROPOSAL
+GROUP PROJECT
+IIT 271 - 2
+Group No: IIT 01
+UWU - NEXUS
+Centralized Digital Ecosystem for Student Life
+Management
+(BSc (Hons)) in Industrial Information Technology
+(IIT) Degree Program
+Department of Computer Science and Informatics
+Faculty of Applied Sciences
+Uva Wellassa University of Sri Lanka
+2026
+
+ii
+Table of Contents
+1.Introduction...............................................................................................................1
+1.1. Project Title...................................................................................................1
+1.2. Project Description ......................................................................................1
+1.3. Background and Motivation .......................................................................2
+1.4. Problem in Brief...........................................................................................2
+1.5. Proposed Solution ........................................................................................4
+1.6. Project Aim and Objectives.........................................................................5
+1.6.1. Project Aim.............................................................................................5
+1.6.2. Project Objectives..................................................................................5
+2.Methodology ..............................................................................................................6
+3.Requirement Identification......................................................................................8
+3.1. Functional and Non-Functional Requirements.........................................8
+3.1.1. Functional Requirements......................................................................8
+3.1.2. Non-Functional Requirements ...........................................................10
+3.2. System Requirements................................................................................11
+3.2.1. Hardware Requirements....................................................................11
+3.2.2. Software Requirements.......................................................................11
+3.3. User Roles....................................................................................................12
+4.Project Plan (Gantt Chart) ....................................................................................13
+5.References................................................................................................................14
+1
+1.Introduction
+1.1. Project Title
+UWU-NEXUS: A Centralized Digital Ecosystem for Student Life Management.
+1.2. Project Description
+UWU-NEXUS is a comprehensive, university exclusive web application designed to
+centralize and digitize the core aspects of student life at Uva Wellassa University
+(UWU). The platform operates under a strict security constraint:
+The ecosystem integrates six key functional modules into a single, cohesive platform,
+each addressing a specific gap in current university digital infrastructure:
+1. University Event Calendar - A centralized scheduling system that displays all
+upcoming university activities and events, accessible by all registered students.
+2. Event Ticket Booking - A digital ticketing platform that simplifies the process
+of organizing and attending paid events on campus, allowing clubs to sell tickets
+and students to purchase them online.
+3. Sarasawi Alewisala (Online Marketplace) - A digital transformation of the
+traditional campus marketplace, providing a dedicated student to student
+e - commerce platform within the trusted UWU network.
+4. Lost and Found - A structured portal for students to report misplaced
+belongings and locate items discovered on campus, replacing the current
+informal, untracked process.
+5. Smart GPA Calculator - An intelligent academic tool that automatically
+identifies a student's degree program and loads their specific curriculum for
+accurate GPA computation.
+6. Information Hub - A comprehensive digital directory providing verified
+information on university procedures, lecturer contacts and emergency hotlines.
+2
+1.3. Background and Motivation
+As Uva Wellassa University (UWU) continues to evolve as a center of academic
+excellence, the digital integration of its diverse campus activities presents a significant
+opportunity to further enhance the student experience. While current communication
+methods reflect a vibrant and active student body, there is a growing potential to
+modernize these interactions through a unified digital framework. Research
+consistently highlights that implementing integrated digital ecosystems can
+significantly optimize engagement, coordination, and administrative flow within
+university environments.
+Currently, university events are advertised through various social media groups and
+physical boards. Implementing a centralized management system offers a proactive way
+to minimize scheduling conflicts and ensure the student community remains
+consistently informed and engaged.
+In the area of campus commerce, the traditional 'Sarasawi Alewisala' marketplace
+provides a strong foundation for student entrepreneurship. Enhancing this with a
+dedicated digital infrastructure would provide verified records and a more secure,
+structured environment for student-to-student transactions. Similarly, formalizing the
+lost and found process through a structured digital portal can improve recovery rates
+for personal belongings beyond what is currently possible through informal social
+media reports.
+Academic tracking also presents an opportunity for modernization. Transitioning from
+manual calculations to automated GPA monitoring tools can enhance academic
+awareness and help students engage more effectively with their degree progression.
+Furthermore, a unified repository would assist students, particularly those in their first
+year, in navigating university procedures and locating verified lecturer contacts more
+efficiently. This support reduces early-semester stress and facilitates a smoother
+transition into university life.
+These opportunities inspired UWU-NEXUS, a digital ecosystem designed to enhance
+campus life. As Computer Science and Technology students at Uva Wellassa
+University of Sri Lanka, we aim to create an innovative solution that supports our peers.
+3
+1.4. Problem in Brief
+The student community at Uva Wellassa University currently operates without a unified
+digital platform to manage campus activities, academic tools, and peer-to-peer
+interactions. A detailed analysis of the current situation reveals the following critical
+problems:
+1. Event Scheduling Conflicts: Clubs and academic departments schedule events
+independently with no awareness of each other's calendars, frequently resulting
+in date clashes, reduced student attendance, and wasted organizational effort.
+2. Inefficient Ticket Management and Accessibility Issues: Current paid
+campus events rely on manual ticket distribution and cash payments, making it
+difficult and time-consuming for students to purchase tickets. This leads to
+errors, lost payments, undocumented transactions, and an overall poor
+experience for both organizers and attendees.
+3. Absence of a Trusted Student Marketplace: There is no secure, universityendorsed digital platform for students to buy and sell goods or services.
+Commerce occurs through informal channels without verification, creating risks
+for both buyers and sellers.
+4. Unstructured Lost and Found Process: Students who lose personal items
+have no formal reporting mechanism. Found items are posted informally with
+no central tracking system, resulting in very low recovery rates and widespread
+frustration.
+5. Manual and Tedious GPA Calculation: While general GPA tools exist online,
+manually entering credit values for each individual subject is difficult and timeconsuming. This manual process also increases the risk of calculation errors,
+leading to inaccurate results.
+6. Critical Information Inaccessibility: New and returning students alike
+struggle to find accurate, up-to-date information on university procedures,
+lecturer contact details, campus layout, and emergency contacts. The lack of a
+central information repository contributes to administrative confusion and
+unnecessary delays.
+4
+1.5. Proposed Solution
+UWU-NEXUS is an integrated, six-module web platform addressing identified
+problems through a secure, university email-authenticated environment. The solution
+for each area is detailed below:
+1. University Event Calendar: Clubs and academic departments will publish
+events onto a shared digital calendar. This allows organizers to check for
+overlaps while students stay informed of upcoming campus activities.
+2. Event Ticket Booking System: Allows student organizations to create events
+with defined prices and deadlines. Students securely purchase tickets online,
+eliminating the need for manual cash handling and physical distribution.
+3. Sarasawi Alewisala - Online Marketplace: A dedicated e-commerce module
+for student entrepreneurs to list products or services. Verified university access
+ensures a trusted network for buyers and sellers to interact directly.
+4. Lost and Found Portal: A structured registry for reporting lost or found items.
+The system facilitates community-driven recovery within a verified university
+network using detailed reports and contact information.
+5. Smart GPA Calculator: Automatically identifies a student's degree program
+via their university email index to load specific curricula. Students enter grades
+for instant GPA calculation and degree classification.
+6. Information Hub: A comprehensive directory covering university procedures,
+lecturer profiles and emergency hotlines. This serves as the primary point of
+reference for all students.
+5
+1.6. Project Aim and Objectives
+1.6.1. Project Aim
+The aim of this project is to design and develop UWU-NEXUS, a secure, scalable, and
+user friendly web application that centralizes student services, event management,
+academic tools, and university information into a single authenticated platform,
+exclusively accessible to the verified student and staff community of Uva Wellassa
+University of Sri Lanka.
+1.6.2. Project Objectives
+1. To implement a University Event Calendar, enabling clubs and departments
+to coordinate events without scheduling clashes and allowing students to
+discover and follow campus activities with ease.
+2. To build a fully functional digital Event Ticket Booking module that
+automates online sales and booking confirmation.
+3. To create the Sarasawi Alewisala Online Marketplace, providing students
+with a trusted, structured digital platform to list, browse, and purchase goods
+and services within the verified UWU network.
+4. To develop a Lost and Found portal with structured reporting forms, enabling
+students to efficiently report and recover misplaced personal belongings through
+community participation.
+5. To implement a Smart GPA Calculator that automatically detects a student's
+degree program via their email index format, loads the appropriate curriculum,
+and computes the GPA and degree classification.
+6. To construct a comprehensive Information Hub containing university
+procedures, complete lecturer profiles and emergency contacts to serve as a
+reliable first point of reference for all students.
+6
+2. Methodology
+2.1. Waterfall Model Methodology
+Figure 1 : Waterfall Software Development Methodology
+The development of UWU-NEXUS will strictly follow the Waterfall Methodology.
+This sequential, phase-based model is well-suited to this project because the system
+requirements are clearly defined from the outset and the scope is well-bounded within
+the constraints of a 200-level university project. The Waterfall model ensures that each
+phase is fully completed and verified before progressing to the next, providing a
+structured and disciplined development process.
+The following six phases outline the complete development lifecycle:
+1. Phase 1 - Requirements Analysis: The team will identify and document all
+functional and non-functional requirements. We will conduct observations of
+current campus processes and interview students and club administrators to
+capture daily pain points. The output is a comprehensive Software
+Requirements Specification (SRS) defining the system’s performance and
+functionality.
+7
+2. Phase 2 - System Design: The system architecture will be designed, including
+the MySQL database schema, the Next.js component hierarchy for the
+frontend, and the PHP module architecture for the backend. Key UML diagrams
+(Use Case, ER, Class, and Data Flow) and the User Interface (UI) wireframes
+for all six modules will be finalized.
+3. Phase 3 - Implementation: The system will be developed module by module.
+The frontend will be built from scratch using Next.js, and the backend will be
+implemented using hard-coded PHP without frameworks, using MySQL for
+data management. Development will follow a specific order: authentication,
+calendar, ticketing, marketplace, lost and found, GPA calculator, and
+information hub.
+4. Phase 4 - Testing: Comprehensive testing will verify that each module meets
+its requirements. This includes Unit testing for individual features, Integration
+testing for module interaction, and User Acceptance Testing (UAT) with
+student volunteers. The @uwu.ac.lk email authentication will be rigorously
+tested for security.
+5. Phase 5 - Deployment: Upon successful testing, the system will be deployed
+to a local or institutional server environment to simulate real-world usage within
+the university setting. Technical configurations will be finalized to ensure the
+platform is stable and accessible for the student community.
+6. Phase 6 - Maintenance: Following deployment, the system will be monitored
+for performance issues, security vulnerabilities, and bugs. Corrective
+maintenance will be performed based on user feedback. Potential future
+enhancements—such as push notification support and integration with the
+university's official student portal—will be documented for future
+consideration.
+8
+3. Requirement Identification
+3.1. Functional and Non-Functional Requirements
+3.1.1. Functional Requirements
+1. User Access & Identification
+• The system shall be an open-access platform for the university community
+without requiring a formal registration or login process.
+• The system shall require a valid @uwu.ac.lk university email or index number
+only for specific functional interactions.(e.g., ticket booking or GPA
+calculation).
+2. University Event Calendar
+• Club and academic department administrators shall be able to create events
+by specifying a title, description, date, time, and venue.
+• Administrators shall be able to update or cancel their own events as needed.
+3. Event Ticket Booking System
+• Only the System Administrator shall be able to create ticketed events with
+defined prices and available quantities.
+• Students shall provide their university email to purchase tickets through the
+platform.
+• The system shall send a unique digital booking confirmation directly to the
+provided university email address for each successful transaction.
+• The system shall automatically stop ticket sales once the event is sold out or the
+deadline has passed.
+9
+4. Sarasawi Alewisala - Online Marketplace
+• Students shall be able to create marketplace listings by providing an item name,
+description, price, condition, photos, and a contact email.
+• The system shall allow buyers to contact sellers directly via the contact details
+provided in the listing.
+• Sellers shall be able to remove their listings once an item is sold.
+5. Lost and Found Portal
+• Students shall be able to submit reports for lost or found items, including
+descriptions, last known locations, photos, and contact information.
+• The system shall facilitate direct communication between parties using the
+contact details provided in the reports.
+• Once an item is recovered, the reporter shall be able to remove the report from
+the active list.
+6. Smart GPA Calculator
+• The system shall allow students to enter their university email/index to
+automatically identify their degree program.
+• The platform shall pre-load the relevant curriculum, including subjects and
+credit values, based on the identified program.
+• Students shall enter their grades to receive an accurate Weighted GPA and
+degree classification instantly.
+7. Information Hub
+• Provide structured information on university procedures. (medical submissions,
+registration, etc.)
+• Maintain a searchable directory of lecturers and contacts.
+• Emergency contact numbers and campus hotlines shall be prominently
+displayed.
+• The System Administrator shall have the authority to update all Information
+Hub content.
+10
+3.1.2. Non-Functional Requirements
+1. Security
+• All data transmission between the client and server shall be encrypted using
+HTTPS.
+• Administrator passwords shall be hashed and salted before storage; plain text
+passwords shall never be stored.
+2. Performance
+• The system shall support concurrent access by multiple users without
+measurable performance degradation.
+• The GPA Calculator shall produce results in real time with no perceptible delay.
+3. Scalability
+• The database schema shall be designed to accommodate growth in the number
+of users, events, and marketplace listings without requiring architectural
+changes.
+• The modular design of the application shall allow new features or modules to
+be added in the future without disrupting existing functionality.
+4. Usability
+• The interface shall be intuitive and consistent across all modules, requiring no
+prior technical training for students to use effectively.
+• The system shall display clear, actionable error messages when users submit
+invalid input.
+• The system shall be fully responsive and usable across modern desktop and
+mobile web browsers.
+5. Availability and Reliability
+• All data shall be stored persistently in the MySQL database, ensuring data
+integrity across sessions.
+• Scheduled maintenance periods shall be communicated to users at least 24 hours
+in advance.
+11
+3.2. System Requirements
+3.2.1. Hardware Requirements
+1. Development Machines: Laptop or desktop computer with a minimum of 4
+GB RAM, Dual Core Processor or higher, and 500 GB HDD or higher.
+2. Operating System: Linux/Windows 10 / Windows 11.
+3. Network: Stable internet connection via Wi-Fi or Ethernet for development,
+testing, and deployment.
+3.2.2. Software Requirements
+1. Front End Framework: Next.js - all components and pages to be built
+entirely from scratch without pre built UI templates.
+2. Back End Language: PHP. (plain, hard coded; no frameworks such as
+Laravel or CodeIgniter to be used).
+3. Database Management System: MySQL - used for all relational data
+storage.
+4. Local Development Server: Apache via XAMPP. (for local PHP and
+MySQL development environment).
+5. Code Editor: Visual Studio Code with relevant extensions. (PHP
+Intelephense, ESLint, Prettier)
+6. Version Control: Git with GitHub for source code management and team
+collaboration.
+7. Web Browser: Google Chrome (primary testing); Mozilla Firefox and
+Microsoft Edge (cross browser validation).
+12
+3.3. User Roles
+The UWU-NEXUS platform supports three distinct user roles, each with specific
+permissions and access levels:
+1. Student (General User)
+• Can browse and follow events on the University Event Calendar.
+• Can purchase tickets for campus events.
+• Can list products, browse listings, and contact sellers in the Sarasawi Alewisala
+Marketplace.
+• Can submit and view lost and found reports.
+• Can use the Smart GPA Calculator with their auto-detected degree curriculum.
+• Can access all content within the Information Hub.
+2. Club / Department Administrator
+• Can create, edit, and delete events on the University Event Calendar.
+• Can request the System Administrator to add or manage tickets for their events.
+3. System Administrator
+• Has full administrative control over all platform modules.
+• The only role authorized to set up and manage ticketed events, including pricing
+and quantities.
+• Can remove inappropriate marketplace listings or lost/found posts.
+• Can create, update, and delete all content in the Information Hub.
+• Responsible for monitoring system-wide activity and maintaining information
+accuracy.
+13
+4. Project Plan (Gantt Chart)
+The following Gantt chart outlines the planned development timeline for UWUNEXUS across an 15 week period. Tasks are scheduled sequentially in accordance with
+the Waterfall methodology.
+
+Table 1 : Gantt Chart
+Task Week
+1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+Identify Topics & Gathering
+Requirements
+Requirements Analysis &
+Specification
+User Interfaces & Database
+Design
+Implementation & Unit Testing
+Integration & System Testing
+Operations & Maintenance
+Documentation
+ 
+14
+5. References
+[1] Picciano, A.G. 2017. Theories and Frameworks for Online Education: Seeking
+an Integrated Model. Online Learning, 21(3), pp. 166–190. DOI:
+https://doi.org/10.24059/olj.v21i3.1225
+[2] Uva Wellassa University. 2026. Official University Website. Department of
+Computer Science and Informatics. Retrieved May 09, 2026 from
+https://www.uwu.ac.lk
+[3] Next.js Documentation. 2024. Getting Started with Next.js. Vercel Inc. Retrieved
+May 09, 2026 from https://nextjs.org/docs
+[4] PHP Manual. 2024. PHP: Hypertext Preprocessor. The PHP Group. Retrieved
+May 09, 2026 from https://www.php.net/manual/en/
