@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Shield, Users, Calendar, Search, RefreshCw, CheckCircle, XCircle, Trash2, PlusCircle, Clock, MapPin, X, Upload, ChevronDown, Ticket } from "lucide-react";
+import { Shield, Users, Calendar, Search, RefreshCw, CheckCircle, XCircle, Trash2, PlusCircle, Clock, MapPin, X, Upload, ChevronDown, Ticket, Store, EyeOff, BookOpen } from "lucide-react";
 import { uploadToCloudinary } from "../lib/cloudinary";
 
 /* ─── Types ──────────────────────────────────────────────────── */
@@ -49,7 +49,7 @@ function formatTime(t: string) {
 
 /* ─── Main Component ────────────────────────────────────────── */
 export default function AdminPage() {
-  const [tab, setTab] = useState<"users" | "events" | "tickets">("users");
+  const [tab, setTab] = useState<"users" | "events" | "tickets" | "marketplace" | "lost-found" | "info-hub">("users");
 
   /* auth from cookie */
   const [myId, setMyId] = useState("");
@@ -206,6 +206,113 @@ export default function AdminPage() {
     closed: tickets.filter(t => t.status === "closed").length,
   };
 
+  /* ── Marketplace Tab ──────────────────────────────────────────── */
+  const [marketplaceItems, setMarketplaceItems] = useState<any[]>([]);
+  const [marketplaceLoading, setMarketplaceLoading] = useState(false);
+
+  const fetchMarketplace = useCallback(async () => {
+    if (!myId) return;
+    setMarketplaceLoading(true);
+    try {
+      const r = await fetch(`http://localhost:8000/get_marketplace_items.php?admin=true`);
+      const d = await r.json();
+      if (d.success) setMarketplaceItems(d.items);
+    } finally { setMarketplaceLoading(false); }
+  }, [myId]);
+
+  useEffect(() => { if (myId && tab === "marketplace") fetchMarketplace(); }, [myId, tab, fetchMarketplace]);
+
+  const updateMarketplaceStatus = async (itemId: number, action: string) => {
+    if (!confirm(`Are you sure you want to ${action} this item?`)) return;
+    try {
+      const r = await fetch("http://localhost:8000/admin_delete_marketplace_item.php", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item_id: itemId, user_id: +myId, action })
+      });
+      const d = await r.json();
+      if (d.success) {
+        if (action === "delete") {
+          setMarketplaceItems(prev => prev.filter(i => i.id !== itemId));
+        } else {
+          const newStatus = action === "approve" ? "active" : action === "reject" ? "rejected" : "hidden";
+          setMarketplaceItems(prev => prev.map(i => i.id === itemId ? { ...i, status: newStatus } : i));
+        }
+      } else {
+        alert(d.message);
+      }
+    } catch (e) {
+      alert("Error updating marketplace item.");
+    }
+  };
+
+  /* ── Lost & Found Tab ──────────────────────────────────────────── */
+  const [lostFoundItems, setLostFoundItems] = useState<any[]>([]);
+  const [lostFoundLoading, setLostFoundLoading] = useState(false);
+
+  const fetchLostFound = useCallback(async () => {
+    if (!myId) return;
+    setLostFoundLoading(true);
+    try {
+      const r = await fetch(`http://localhost:8000/get_lost_found.php`);
+      const d = await r.json();
+      if (d.success) setLostFoundItems(d.items);
+    } finally { setLostFoundLoading(false); }
+  }, [myId]);
+
+  useEffect(() => { if (myId && tab === "lost-found") fetchLostFound(); }, [myId, tab, fetchLostFound]);
+
+  const deleteLostFoundItem = async (itemId: number) => {
+    if (!confirm("Are you sure you want to permanently delete this report?")) return;
+    try {
+      const r = await fetch("http://localhost:8000/delete_lost_found.php", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: itemId, user_id: +myId })
+      });
+      const d = await r.json();
+      if (d.success) {
+        setLostFoundItems(prev => prev.filter(i => i.id !== itemId));
+      } else {
+        alert(d.message);
+      }
+    } catch (e) {
+      alert("Error deleting item.");
+    }
+  };
+
+  /* ── Info Hub Tab ────────────────────────────────────────────── */
+  const [infoHubItems, setInfoHubItems] = useState<any[]>([]);
+  const [infoHubLoading, setInfoHubLoading] = useState(false);
+  const [showCreateInfoHub, setShowCreateInfoHub] = useState(false);
+
+  const fetchInfoHub = useCallback(async () => {
+    setInfoHubLoading(true);
+    try {
+      const r = await fetch(`http://localhost:8000/get_info_hub.php`);
+      const d = await r.json();
+      if (d.success) setInfoHubItems(d.items);
+    } finally { setInfoHubLoading(false); }
+  }, []);
+
+  useEffect(() => { if (myId && tab === "info-hub") fetchInfoHub(); }, [myId, tab, fetchInfoHub]);
+
+  const deleteInfoHubItem = async (itemId: number) => {
+    if (!confirm("Are you sure you want to delete this Info Hub item?")) return;
+    try {
+      const r = await fetch("http://localhost:8000/delete_info_hub.php", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: itemId, user_id: +myId })
+      });
+      const d = await r.json();
+      if (d.success) {
+        setInfoHubItems(prev => prev.filter(i => i.id !== itemId));
+      } else {
+        alert(d.message);
+      }
+    } catch (e) {
+      alert("Error deleting item.");
+    }
+  };
+
   /* ── Render ───────────────────────────────────────────────── */
   return (
     <div className="container py-8">
@@ -229,6 +336,11 @@ export default function AdminPage() {
               <PlusCircle size={18} /> Create Ticket
             </button>
           )}
+          {tab === "info-hub" && ["superadmin"].includes(myRole) && (
+            <button className="btn btn-primary" onClick={() => setShowCreateInfoHub(true)}>
+              <PlusCircle size={18} /> Add Info Hub Item
+            </button>
+          )}
           <button className="btn btn-secondary" onClick={tab === "users" ? fetchUsers : tab === "events" ? fetchEvents : fetchTickets}>
             <RefreshCw size={16} /> Refresh
           </button>
@@ -236,13 +348,16 @@ export default function AdminPage() {
       </div>
 
       {/* Tab Switcher */}
-      <div className="flex gap-1 mb-8 p-1 rounded-lg" style={{ backgroundColor: "var(--secondary)", display: "inline-flex", border: "1px solid var(--border)" }}>
+      <div className="flex gap-1 mb-8 p-1 rounded-lg overflow-x-auto" style={{ backgroundColor: "var(--secondary)", display: "inline-flex", border: "1px solid var(--border)", maxWidth: "100%" }}>
         {[
           { key: "users", label: "Users", icon: <Users size={16} /> }, 
           { key: "events", label: "Events", icon: <Calendar size={16} /> },
-          { key: "tickets", label: "Tickets", icon: <Ticket size={16} /> }
+          { key: "tickets", label: "Tickets", icon: <Ticket size={16} /> },
+          { key: "marketplace", label: "Marketplace", icon: <Store size={16} /> },
+          { key: "lost-found", label: "Lost & Found", icon: <Search size={16} /> },
+          { key: "info-hub", label: "Info Hub", icon: <BookOpen size={16} /> }
         ].map(t => (
-          <button key={t.key} onClick={() => setTab(t.key as "users" | "events" | "tickets")}
+          <button key={t.key} onClick={() => setTab(t.key as "users" | "events" | "tickets" | "marketplace" | "lost-found" | "info-hub")}
             className="btn flex items-center gap-2"
             style={{ padding: "0.5rem 1.5rem", backgroundColor: tab === t.key ? "var(--primary)" : "transparent", color: tab === t.key ? "white" : "var(--foreground)", transition: "all 0.2s" }}>
             {t.icon}{t.label}
@@ -620,6 +735,179 @@ export default function AdminPage() {
         </>
       )}
 
+      {/* ── MARKETPLACE TAB ── */}
+      {tab === "marketplace" && (
+        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div className="p-4 border-b flex justify-between items-center" style={{ borderColor: "var(--border)" }}>
+            <h2 className="font-bold text-lg flex items-center gap-2"><Store size={20} /> Marketplace Moderation</h2>
+          </div>
+          {marketplaceLoading ? (
+            <div className="p-8 text-center text-muted">Loading items...</div>
+          ) : marketplaceItems.length === 0 ? (
+            <div className="p-8 text-center text-muted">No items found.</div>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                <thead>
+                  <tr style={{ backgroundColor: "rgba(0,0,0,0.2)", borderBottom: "1px solid var(--border)" }}>
+                    <th className="p-4 font-semibold">Item</th>
+                    <th className="p-4 font-semibold">Price</th>
+                    <th className="p-4 font-semibold">Seller</th>
+                    <th className="p-4 font-semibold">Status</th>
+                    <th className="p-4 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {marketplaceItems.map(item => (
+                    <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                      <td className="p-4">
+                        <div className="font-bold">{item.title}</div>
+                        <div className="text-xs text-muted">{item.category}</div>
+                      </td>
+                      <td className="p-4 font-bold text-primary">Rs. {item.price}</td>
+                      <td className="p-4 text-sm">
+                        <div>{item.seller_name}</div>
+                        <div className="text-muted">{item.seller_email}</div>
+                      </td>
+                      <td className="p-4">
+                        <span className="badge" style={{ backgroundColor: STATUS_COLORS[item.status === 'active' ? 'approved' : item.status]?.bg || 'rgba(0,0,0,0.2)', color: STATUS_COLORS[item.status === 'active' ? 'approved' : item.status]?.color || 'white' }}>
+                          {item.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 text-right">
+                        {item.status === 'pending' && (
+                          <>
+                            <button className="btn mr-2" style={{ backgroundColor: "var(--success)", color: "white", padding: "0.4rem 0.8rem" }} onClick={() => updateMarketplaceStatus(item.id, "approve")}>
+                              <CheckCircle size={14} /> Approve
+                            </button>
+                            <button className="btn mr-2" style={{ backgroundColor: "var(--danger)", color: "white", padding: "0.4rem 0.8rem" }} onClick={() => updateMarketplaceStatus(item.id, "reject")}>
+                              <XCircle size={14} /> Reject
+                            </button>
+                          </>
+                        )}
+                        {item.status !== 'pending' && item.status !== 'hidden' && (
+                          <button className="btn mr-2" style={{ backgroundColor: "var(--warning)", color: "black", padding: "0.4rem 0.8rem" }} onClick={() => updateMarketplaceStatus(item.id, "hide")}>
+                            <EyeOff size={14} /> Hide
+                          </button>
+                        )}
+                        <button className="btn" style={{ backgroundColor: "transparent", color: "var(--danger)", border: "1px solid var(--danger)", padding: "0.4rem 0.8rem" }} onClick={() => updateMarketplaceStatus(item.id, "delete")}>
+                          <Trash2 size={14} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── LOST & FOUND TAB ── */}
+      {tab === "lost-found" && (
+        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div className="p-4 border-b flex justify-between items-center" style={{ borderColor: "var(--border)" }}>
+            <h2 className="font-bold text-lg flex items-center gap-2"><Search size={20} /> Lost & Found Reports</h2>
+          </div>
+          {lostFoundLoading ? (
+            <div className="p-8 text-center text-muted">Loading reports...</div>
+          ) : lostFoundItems.length === 0 ? (
+            <div className="p-8 text-center text-muted">No reports found.</div>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                <thead>
+                  <tr style={{ backgroundColor: "rgba(0,0,0,0.2)", borderBottom: "1px solid var(--border)" }}>
+                    <th className="p-4 font-semibold">Title</th>
+                    <th className="p-4 font-semibold">Type</th>
+                    <th className="p-4 font-semibold">Status</th>
+                    <th className="p-4 font-semibold">Reporter</th>
+                    <th className="p-4 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {lostFoundItems.map(item => (
+                    <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                      <td className="p-4">
+                        <div className="font-bold">{item.title}</div>
+                        <div className="text-xs text-muted mt-1">{item.time_date} at {item.location}</div>
+                      </td>
+                      <td className="p-4">
+                        <span className="badge" style={{ backgroundColor: item.type === 'Lost' ? 'var(--danger)' : 'var(--success)', color: 'white' }}>
+                          {item.type}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <span className="badge" style={{ backgroundColor: item.status === 'active' ? 'var(--warning)' : 'var(--muted)', color: item.status === 'active' ? 'black' : 'white' }}>
+                          {item.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm">
+                        <div>{item.reporter_name}</div>
+                        <div className="text-muted">{item.reporter_email}</div>
+                      </td>
+                      <td className="p-4 text-right">
+                        <button className="btn" style={{ backgroundColor: "var(--danger)", color: "white", padding: "0.4rem 0.8rem" }} onClick={() => deleteLostFoundItem(item.id)}>
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── INFO HUB TAB ── */}
+      {tab === "info-hub" && (
+        <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+          <div className="p-4 border-b flex justify-between items-center" style={{ borderColor: "var(--border)" }}>
+            <h2 className="font-bold text-lg flex items-center gap-2"><BookOpen size={20} /> Info Hub Directory</h2>
+          </div>
+          {infoHubLoading ? (
+            <div className="p-8 text-center text-muted">Loading...</div>
+          ) : infoHubItems.length === 0 ? (
+            <div className="p-8 text-center text-muted">No items found.</div>
+          ) : (
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
+                <thead>
+                  <tr style={{ backgroundColor: "rgba(0,0,0,0.2)", borderBottom: "1px solid var(--border)" }}>
+                    <th className="p-4 font-semibold">Title</th>
+                    <th className="p-4 font-semibold">Category</th>
+                    <th className="p-4 font-semibold">Details</th>
+                    <th className="p-4 font-semibold text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {infoHubItems.map(item => (
+                    <tr key={item.id} style={{ borderBottom: "1px solid var(--border)" }}>
+                      <td className="p-4 font-bold">{item.title}</td>
+                      <td className="p-4">
+                        <span className="badge" style={{ backgroundColor: item.category === 'procedure' ? 'var(--primary)' : item.category === 'hotline' ? 'var(--danger)' : 'var(--warning)', color: item.category === 'hotline' ? 'white' : 'black' }}>
+                          {item.category.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 text-sm text-muted">
+                        <div className="truncate max-w-xs">{item.description}</div>
+                        {item.contact_info && <div>Contact: {item.contact_info}</div>}
+                      </td>
+                      <td className="p-4 text-right">
+                        <button className="btn text-danger hover:bg-danger/10 p-2" onClick={() => deleteInfoHubItem(item.id)}>
+                          <Trash2 size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── Create Event Modal ── */}
       {showCreateModal && (
         <CreateEventModal
@@ -635,6 +923,15 @@ export default function AdminPage() {
           myId={myId}
           onClose={() => setShowCreateTicketModal(false)}
           onCreated={(ticket) => { setTickets(prev => [ticket, ...prev]); setShowCreateTicketModal(false); }}
+        />
+      )}
+
+      {/* ── Create Info Hub Modal ── */}
+      {showCreateInfoHub && (
+        <CreateInfoHubModal
+          myId={myId}
+          onClose={() => setShowCreateInfoHub(false)}
+          onCreated={(item) => { setInfoHubItems(prev => [item, ...prev]); setShowCreateInfoHub(false); }}
         />
       )}
     </div>
@@ -866,6 +1163,83 @@ function CreateTicketModal({ myId, onClose, onCreated }: { myId: string; onClose
 
           <button type="submit" disabled={submitting || uploading} className="btn btn-primary w-full justify-center text-lg" style={{ padding: "0.75rem", opacity: submitting ? 0.7 : 1 }}>
             {uploading ? "Uploading image..." : submitting ? "Creating..." : "Create Ticketed Event"}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Create Info Hub Modal ──────────────────────────────────────── */
+function CreateInfoHubModal({ myId, onClose, onCreated }: { myId: string; onClose: () => void; onCreated: (i: any) => void; }) {
+  const [form, setForm] = useState({ category: "procedure", title: "", description: "", contact_info: "", action_link: "", action_text: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true); setError("");
+    try {
+      const res = await fetch("http://localhost:8000/create_info_hub.php", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, user_id: +myId }),
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      onCreated({ ...form, id: data.id });
+    } catch (err: any) {
+      setError(err.message || "Failed to create info hub item.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const set = (k: string, v: string) => setForm(f => ({ ...f, [k]: v }));
+
+  return (
+    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.8)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }} onClick={onClose}>
+      <div className="card" style={{ maxWidth: "600px", width: "100%", maxHeight: "92vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <BookOpen size={24} style={{ color: "var(--primary)" }} /> Add Info Hub Item
+          </h2>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)" }}><X size={22} /></button>
+        </div>
+
+        {error && <div className="mb-4 p-3 rounded text-sm" style={{ backgroundColor: "rgba(239,68,68,0.1)", color: "var(--danger)", border: "1px solid rgba(239,68,68,0.2)" }}>{error}</div>}
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group mb-4">
+            <label className="form-label text-sm">Category *</label>
+            <select className="form-input" value={form.category} onChange={e => set("category", e.target.value)}>
+              <option value="procedure">University Procedure</option>
+              <option value="hotline">Emergency Hotline</option>
+              <option value="contact">Key Contact</option>
+            </select>
+          </div>
+
+          <div className="form-group mb-4">
+            <label className="form-label text-sm">Title / Name *</label>
+            <input type="text" className="form-input" required value={form.title} onChange={e => set("title", e.target.value)} />
+          </div>
+
+          <div className="form-group mb-4">
+            <label className="form-label text-sm">Description / Role *</label>
+            <textarea className="form-input" required rows={3} value={form.description} onChange={e => set("description", e.target.value)}></textarea>
+          </div>
+
+          <div className="form-group mb-4">
+            <label className="form-label text-sm">Contact Info (Phone / Email)</label>
+            <input type="text" className="form-input" value={form.contact_info} onChange={e => set("contact_info", e.target.value)} />
+          </div>
+
+          <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: "1fr 1fr" }}>
+            <div className="form-group"><label className="form-label text-sm">Action URL</label><input type="url" className="form-input" value={form.action_link} onChange={e => set("action_link", e.target.value)} placeholder="https://..." /></div>
+            <div className="form-group"><label className="form-label text-sm">Action Button Text</label><input type="text" className="form-input" value={form.action_text} onChange={e => set("action_text", e.target.value)} placeholder="Download Form" /></div>
+          </div>
+
+          <button type="submit" disabled={submitting} className="btn btn-primary w-full justify-center text-lg" style={{ padding: "0.75rem", opacity: submitting ? 0.7 : 1 }}>
+            {submitting ? "Saving..." : "Save Item"}
           </button>
         </form>
       </div>

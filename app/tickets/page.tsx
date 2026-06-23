@@ -140,7 +140,7 @@ export default function TicketsPage() {
           <p>There are currently no active ticketed events available. Please check back later!</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md-grid-cols-2 lg-grid-cols-3 gap-8">
           {events.map((event) => (
             <div key={event.id} className="card p-0 overflow-hidden flex flex-col" style={{ padding: 0 }}>
               {/* Image */}
